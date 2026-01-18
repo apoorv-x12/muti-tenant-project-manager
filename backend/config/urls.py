@@ -16,8 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
+
+'''
+graphql/ maps the URL endpoint /graphql to the Django application's GraphQL view.
+The csrf_exempt decorator is used to disable Django's Cross-Site Request Forgery (CSRF)
+protection for this specific URL, which is often necessary for non-browser-based API clients.
+graphiql=True enables the GraphiQL interface, a web-based IDE for exploring and testing
+GraphQL APIs.
+'''

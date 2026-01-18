@@ -1,2 +1,4 @@
 django
 psycopg2-binary
+graphene-django
+django-graphql-jwt
