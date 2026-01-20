@@ -39,3 +39,43 @@ class TaskCommentType(DjangoObjectType):
     class Meta:
         model = TaskComment
         fields = ('id', 'task', 'content', 'author_email', 'created_at', 'last_updated_at') 
+        
+        
+# QUERIES
+class Query(graphene.ObjectType):
+    # 1. List projects (organization-scoped)
+    projects = graphene.List(
+        ProjectType,
+        organization_id=graphene.ID(required=True)
+    )
+    
+    # 2. Get project with tasks
+    project = graphene.Field(
+        ProjectType,
+        id=graphene.ID(required=True)
+    )
+    
+    def resolve_projects(self, info, organization_id):
+        try:
+            # Organization-scoped filtering
+            return Project.objects.filter(organization_id=organization_id).prefetch_related('tasks')
+        except Project.DoesNotExist:
+             # Return None (GraphQL handles null)
+            return None
+        except ValueError:
+            raise Exception("Invalid ID format") 
+        # Let other exceptions crash - they're bugs!   
+        
+    def resolve_project(self, info, id):
+        try:
+          return Project.objects.prefetch_related('tasks__comments').get(id=id)
+        except Project.DoesNotExist:
+             # Return None (GraphQL handles null)
+            return None
+        except ValueError:
+            raise Exception("Invalid ID format") 
+
+# prefetch_related avoids n+1 query problem by fetching related objects in a single query
+
+class Mutation(graphene.ObjectType):
+    pass
