@@ -85,8 +85,8 @@ class CreateProject(graphene.Mutation):
     project = graphene.Field(ProjectType)
     
     def mutate(self, info, organization_id, name, **kwargs):
-        # Check organization exists
-        if not Organization.objects.filter(id=organization_id).prefetch_related('tasks').exists():
+        # Check organization exists - SIMPLE!
+        if not Organization.objects.filter(id=organization_id).exists():
             raise Exception(f"Organization {organization_id} not found")
         
         # Validate name
@@ -113,9 +113,9 @@ class UpdateProject(graphene.Mutation):
     project = graphene.Field(ProjectType)
     
     def mutate(self, info, id, **kwargs):
-        # Check project exists
+        # Check project exists - SIMPLE!
         try:
-            project = Project.objects.prefetch_related('tasks__comments').get(id=id)
+            project = Project.objects.get(id=id)
         except Project.DoesNotExist:
             raise Exception(f"Project {id} not found")
         
@@ -146,8 +146,8 @@ class CreateTask(graphene.Mutation):
     task = graphene.Field(TaskType)
     
     def mutate(self, info, project_id, title, **kwargs):
-        # Check project exists
-        if not Project.objects.filter(id=project_id).prefetch_related('tasks__comments').exists():
+        # Check project exists - SIMPLE!
+        if not Project.objects.filter(id=project_id).exists():
             raise Exception(f"Project {project_id} not found")
         
         # Validate title
@@ -175,9 +175,9 @@ class UpdateTask(graphene.Mutation):
     task = graphene.Field(TaskType)
     
     def mutate(self, info, id, **kwargs):
-        # Check task exists
+        # Check task exists - SIMPLE!
         try:
-            task = Task.objects.prefetch_related('comments').get(id=id)
+            task = Task.objects.get(id=id)
         except Task.DoesNotExist:
             raise Exception(f"Task {id} not found")
         
@@ -205,8 +205,8 @@ class AddComment(graphene.Mutation):
     comment = graphene.Field(TaskCommentType)
     
     def mutate(self, info, task_id, content, author_email):
-        # Check task exists
-        if not Task.objects.filter(id=task_id).prefetch_related('comments').exists():
+        # Check task exists - SIMPLE!
+        if not Task.objects.filter(id=task_id).exists():
             raise Exception(f"Task {task_id} not found")
         
         # Validate content
