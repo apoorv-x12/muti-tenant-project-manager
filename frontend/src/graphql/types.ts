@@ -12,7 +12,9 @@ export interface GetProjectResponse {
 
 export interface UpdateTaskResponse {
   updateTask: {
+    __typename: "UpdateTask";
     task: {
+      __typename: "Task";
       id: string;
       status: string;
     };
