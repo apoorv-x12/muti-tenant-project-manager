@@ -75,7 +75,7 @@ Frontend:
 
 ## Multi-Tenancy
 
-Each request must include:
+Each request must include the header:
 
 X-ORG: org-name
 
@@ -84,20 +84,30 @@ All queries and mutations are automatically scoped to the active organization, e
 
 ---
 
-## Setup
+## Setup Instructions
 
-### Backend:
+Backend:
 
 cd backend  
-
 python -m venv venv  
 
-venv\Scripts\activate (Windows)  
-source venv/bin/activate (Mac/Linux)  
+Activate virtual environment:
+
+Windows  
+venv\Scripts\activate  
+
+Mac / Linux  
+source venv/bin/activate  
+
+Install dependencies:
 
 pip install -r requirements.txt  
 
+Run migrations:
+
 python manage.py migrate  
+
+Start server:
 
 python manage.py runserver  
 
@@ -105,12 +115,12 @@ GraphQL endpoint:
 
 http://localhost:8000/graphql/
 
-### Frontend:
+---
 
-cd frontend 
+Frontend:
 
+cd frontend  
 npm install  
-
 npm run dev  
 
 Frontend runs at:
