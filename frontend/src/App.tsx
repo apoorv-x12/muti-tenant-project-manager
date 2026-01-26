@@ -1,52 +1,113 @@
-import { useQuery, useMutation } from "@apollo/client/react";
-import { GET_PROJECTS, CREATE_PROJECT } from "./graphql/projects";
 import { useState } from "react";
+import { useQuery, useMutation } from "@apollo/client/react";
+
+import { GET_PROJECTS } from "./graphql/projects";
+import { GET_PROJECT, UPDATE_TASK } from "./graphql/tasks";
+
+import type { Project, Task } from "./types";
+import type {
+  GetProjectsResponse,
+  GetProjectResponse,
+} from "./graphql/types";
 
 export default function App() {
-  const { data, loading, error, refetch } = useQuery(GET_PROJECTS);
-  const [createProject] = useMutation(CREATE_PROJECT);
-  const [name, setName] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
-  if (loading) return <p className="p-6">Loading...</p>;
-  if (error) return <p className="p-6">Error loading projects</p>;
+  // --------------------
+  // Queries
+  // --------------------
+  const projectsQuery = useQuery<GetProjectsResponse>(GET_PROJECTS);
+
+  const projectQuery = useQuery<GetProjectResponse>(GET_PROJECT, {
+    variables: { id: selectedProjectId },
+    skip: !selectedProjectId,
+  });
+
+  // --------------------
+  // Mutations
+  // --------------------
+  const [updateTask] = useMutation(UPDATE_TASK);
+
+  // --------------------
+  // Loading / Error
+  // --------------------
+  if (projectsQuery.loading) {
+    return <p className="p-6">Loading projects...</p>;
+  }
+
+  if (projectsQuery.error) {
+    return <p className="p-6">Failed to load projects</p>;
+  }
+
+  const projects: Project[] = projectsQuery.data?.projects || [];
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <div className="p-6 max-w-2xl mx-auto">
       <h1 className="text-xl font-bold mb-4">Projects</h1>
 
+      {/* --------------------
+          PROJECT LIST
+      -------------------- */}
       <ul className="space-y-2 mb-6">
-        {data.projects.map((p: any) => (
+        {projects.map((project: Project) => (
           <li
-            key={p.id}
-            className="border p-3 rounded flex justify-between"
+            key={project.id}
+            onClick={() => setSelectedProjectId(project.id)}
+            className="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between"
           >
-            <span>{p.name}</span>
-            <span className="text-sm">{p.status}</span>
+            <span>{project.name}</span>
+            <span className="text-sm">{project.status}</span>
           </li>
         ))}
       </ul>
 
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (!name.trim()) return;
+      {/* --------------------
+          TASK LIST
+      -------------------- */}
+      {selectedProjectId && projectQuery.data && (
+        <div className="mt-8">
+          <h2 className="font-semibold mb-3">
+            Tasks — {(projectQuery.data as GetProjectResponse).project.name}
+          </h2>
 
-          await createProject({ variables: { name } });
-          setName("");
-          refetch();
-        }}
-        className="flex gap-2"
-      >
-        <input
-          className="border p-2 flex-1"
-          placeholder="Project name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button className="bg-black text-white px-4">
-          Create
-        </button>
-      </form>
+          <ul className="space-y-2">
+            {(projectQuery.data as GetProjectResponse).project.tasks.map((task: Task) => (
+              <li
+                key={task.id}
+                className="border p-2 rounded flex justify-between items-center"
+              >
+                <span>{task.title}</span>
+
+                <button
+                  className="text-sm border px-2 py-1"
+                  onClick={() =>
+                    updateTask({
+                      variables: {
+                        id: task.id,
+                        status: "DONE",
+                      },
+
+                      // ****** OPTIMISTIC UPDATE
+                      optimisticResponse: {
+                        updateTask: {
+                          __typename: "UpdateTask",
+                          task: {
+                            __typename: "Task",
+                            id: task.id,
+                            status: "DONE",
+                          },
+                        },
+                      },
+                    })
+                  }
+                >
+                  Mark Done
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
