@@ -150,3 +150,5 @@ http://localhost:5173
 ---
 
 Author: Apoorv Shrivastava
+
+# Screenshots available in /screenshots folder.
