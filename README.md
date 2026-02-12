@@ -1,6 +1,6 @@
 # Multi-Tenant Project Management System
 
-A simplified multi-tenant project management application built to demonstrate clean backend architecture, GraphQL design, and a typed React frontend.
+A multi-tenant project management application built to demonstrate clean backend architecture, GraphQL design, and a typed React frontend.
 
 This project focuses on correct data modeling, organization isolation, and clear frontend–backend contracts.
 
@@ -42,36 +42,6 @@ Frontend:
 - Typed GraphQL responses
 - Loading and error handling
 - Clean responsive UI
-
----
-
-## Architecture
-
-┌──────────────────────────┐
-│        Frontend          │
-│      React + TypeScript  │
-│      Apollo Client       │
-└─────────────┬────────────┘
-              │ GraphQL
-              ▼
-┌──────────────────────────┐
-│        Django API        │
-│        Graphene          │
-│                          │
-│   Organization Middleware│
-│   (X-ORG → context.org)  │
-└─────────────┬────────────┘
-              │
-              ▼
-┌──────────────────────────┐
-│        PostgreSQL        │
-│   Organization           │
-│     └── Project          │
-│           └── Task       │
-│                 └── Comment
-└──────────────────────────┘
-
----
 
 ## Multi-Tenancy
 
