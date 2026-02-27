@@ -1,20 +1,28 @@
 # Multi-Tenant Project Management System
 
-A multi-tenant project management application built to demonstrate clean backend architecture, GraphQL design, and a typed React frontend.
+A multi-tenant project management application built to demonstrate:
 
-This project focuses on correct data modeling, organization isolation, and clear frontend–backend contracts.
+- Clean backend architecture  
+- GraphQL design  
+- Typed React frontend  
+
+This project focuses on:
+
+- Correct data modeling  
+- Organization isolation  
+- Clear frontend–backend contracts  
 
 ---
 
 ## Tech Stack
 
-Backend:
+### Backend
 - Django 4.x
 - Graphene (GraphQL)
 - PostgreSQL
 - Django ORM
 
-Frontend:
+### Frontend
 - React 18
 - TypeScript
 - Apollo Client
@@ -24,17 +32,19 @@ Frontend:
 
 ## Features
 
-Backend:
+### Backend
 - Organization, Project, Task, and TaskComment models
 - Relational hierarchy:
 
+```
 Organization → Projects → Tasks → Comments
+```
 
 - GraphQL API for project, task, and comment management
 - Organization-based data isolation using request context
 - No organization IDs exposed in the API
 
-Frontend:
+### Frontend
 - Project dashboard with status indicators
 - Task list per project
 - Task status updates
@@ -43,59 +53,82 @@ Frontend:
 - Loading and error handling
 - Clean responsive UI
 
+---
+
 ## Multi-Tenancy
 
 Each request must include the header:
 
+```
 X-ORG: org-name
+```
 
-The organization is resolved via middleware and attached to the GraphQL context.  
+The organization is resolved via middleware and attached to the GraphQL context.
+
 All queries and mutations are automatically scoped to the active organization, ensuring strict data isolation.
 
 ---
 
 ## Setup Instructions
 
-Backend:
+### Backend
 
-cd backend  
-python -m venv venv  
+```bash
+cd backend
+python -m venv venv
+```
 
 Activate virtual environment:
 
-Windows  
-venv\Scripts\activate  
+**Windows**
+```bash
+venv\Scripts\activate
+```
 
-Mac / Linux  
-source venv/bin/activate  
+**Mac / Linux**
+```bash
+source venv/bin/activate
+```
 
 Install dependencies:
 
-pip install -r requirements.txt  
+```bash
+pip install -r requirements.txt
+```
 
 Run migrations:
 
-python manage.py migrate  
+```bash
+python manage.py migrate
+```
 
 Start server:
 
-python manage.py runserver  
+```bash
+python manage.py runserver
+```
 
 GraphQL endpoint:
 
+```
 http://localhost:8000/graphql/
+```
 
 ---
 
-Frontend:
+### Frontend
 
-cd frontend  
-npm install  
-npm run dev  
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 Frontend runs at:
 
+```
 http://localhost:5173
+```
 
 ---
 
@@ -119,6 +152,12 @@ http://localhost:5173
 
 ---
 
-Author: Apoorv Shrivastava
+## Author
 
-# Screenshots available in /screenshots folder.
+**Apoorv Shrivastava**
+
+---
+
+## Screenshots
+
+Available in the `/screenshots` folder.
